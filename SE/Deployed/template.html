@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge"> <!-- For intranet testing only, remove in production. -->
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <title>Slide Show</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body bgcolor="#000000">
+<script src="countdown.js"></script>
+
+<!-- Script to utilise the WebSocket -->
+        <script type="text/javascript">
+                       
+            var webSocket;
+            var messages = document.getElementById("messages");
+            var url = "ws://192.168.20.27:9050/EchoChamber/echo"
+            var piloc = "SEMediaPi1"
+            
+            if (url != null)
+            {
+                openSocket();
+            }
+            
+            
+           
+            function openSocket(){
+                // Ensures only one connection is open at a time
+                if(webSocket !== undefined && webSocket.readyState !== WebSocket.CLOSED){
+                   writeResponse("WebSocket is already opened.");
+                    return;
+                }
+                // Create a new instance of the websocket
+                webSocket = new WebSocket(url);
+                 
+                /**
+                 * Binds functions to the listeners for the websocket.
+                 */
+                webSocket.onopen = function(event){
+                    // For reasons I can't determine, onopen gets called twice
+                    // and the first time event.data is undefined.
+                    // Leave a comment if you know the answer.
+                    if(event.data === undefined)
+                        return;
+ 
+                    writeResponse(event.data);
+                };
+ 
+                webSocket.onmessage = function(event){
+                
+                    writeResponse(event.data);
+                    onmessage(event.data);
+                };
+ 
+                webSocket.onclose = function(event){
+                    writeResponse("Connection closed");
+                    setTimeout(openSocket, 10000)
+                };
+            }
+           
+            /**
+             * Sends the value of the text input to the server
+             */
+            function send(){
+                var text = document.getElementById("messageinput").value;
+                webSocket.send(text);
+            }
+           
+            function closeSocket(){
+                webSocket.close();
+            }
+            
+            function onmessage(msg)
+            {
+                var obj = JSON.parse(msg);
+                try{
+                if (obj["type"] == "location")
+                {
+                    writeResponse("Location: "+obj["location"])
+                    piloc = obj["location"]
+                }
+                else if (obj["type"] == "message" && obj["location"].indexOf(piloc) != -1)
+                {
+                    writeResponse("Message: " + obj["message"])
+                    displaymessage(obj["message"], obj["time"]);
+                }
+                else
+                {}
+                }
+                catch (e)
+                {
+                    writeResponse("Malformed message " + msg + " " + e)
+                }
+                
+            }
+            
+            function displaymessage(msg, time)
+            {
+            var modal = document.getElementById('myModal');
+            var modalcontent = document.getElementById('myModalContent');
+            modalcontent.innerHTML = msg;
+            modal.style.display = "block";
+            setTimeout(hide, time);
+            }
+            
+            function hide()
+            {
+            var modal = document.getElementById('myModal');
+            modal.style.display = "none";
+            }
+ 
+            function writeResponse(text){
+                console.log(text)
+                //messages.innerHTML += "<br/>" + text;
+            }
+           
+        </script>
+        
+        
+<script>
+var version;
+var xhttp=new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+  if (xhttp.readyState == 4 && xhttp.status == 200) {
+     version = xhttp.responseText;;
+  }
+  
+};
+xhttp.open("GET", "version.txt?t="+Date(), true);
+xhttp.send();
+
+
+var reload = function(){
+
+        var xhttp=new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (xhttp.readyState == 4 && xhttp.status == 200) {
+             if (version != xhttp.responseText)
+                {
+                    window.location.reload();
+                }
+			}
+          
+        };
+        xhttp.open("GET", "version.txt?t="+Date(), true);
+        xhttp.send();
+}
+
+setInterval(reload, 15000);
+
+
+var overlay = function(){
+
+        var xhttp=new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (xhttp.readyState == 4 && xhttp.status == 200) {
+             if (xhttp.responseText != "")
+                {
+                    // Make overlay visible
+                    //Display response
+                    //window.location.reload();
+                }
+                else
+                {
+                //Hide overlay
+                }
+			}
+          
+        };
+        xhttp.open("GET", "version.txt?t="+Date(), true);
+        xhttp.send();
+}
+
+setInterval(overlay, 15000);
+</script>
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content" id="myModalContent">
+
+    <p>Some text in the Modal..</p>
+  </div>
+
+</div>
+
+  <div id="slideShowImages">
+%s    
+  </div>  
+  
+
+ 
+  <script src="slideShow.js"></script>
+</body>
+
+</html>
