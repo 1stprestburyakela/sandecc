@@ -1,0 +1,326 @@
+<html>
+<meta http-equiv="refresh" content="5" >
+<style>
+
+#countup{
+display: block;
+padding: 0px;
+background-color: #FFA500;
+margin: 5 5 5 5px;
+text-align: center;
+font-size:24;
+}
+
+#countup p {
+display: inline-block;
+padding: 5px;
+background: #FFA500;
+margin: 0 0 0px;
+}
+
+#countupnex{
+display: block;
+padding: 0px;
+color: red;
+background-color: #FFA500;
+margin: 5 5 5 5px;
+text-align: center;
+}
+
+#countupnex p {
+display: inline-block;
+padding: 5px;
+background: #FFA500;
+margin: 0 0 0px;
+}
+
+#countupret{
+display: block;
+padding: 0px;
+background-color: red;
+margin: 5 5 5 5px;
+text-align: center;
+}
+
+#countupret p {
+display: inline-block;
+padding: 5px;
+background: #FFA500;
+margin: 0 0 0px;
+}
+
+#countupfin{
+display: block;
+padding: 0px;
+background-color: green;
+margin: 5 5 5 5px;
+text-align: center;
+}
+
+#countupfin p {
+display: inline-block;
+padding: 5px;
+background: #FFA500;
+margin: 0 0 0px;
+}
+
+</style>
+<script>
+/*
+* Basic Count Up from Date and Time
+* Author: @mrwigster / trulycode.com
+*/
+window.onload=function() {
+  // Month,Day,Year,Hour,Minute,Second
+  upTime('feb,04,2017,17:00:00', 'total'); // ****** Change this line!
+  fixTime('feb,04,2017,17:01:00','feb,05,2017,02:24:00', '38');
+fixTime('feb,04,2017,17:07:00','feb,05,2017,03:27:00', '39');
+fixTime('feb,04,2017,17:14:00','feb,05,2017,05:10:27', '40');
+fixTime('feb,04,2017,17:28:00','feb,05,2017,04:45:45', '41');
+fixTime('feb,04,2017,17:02:00','feb,05,2017,04:11:38', '42');
+fixTime('feb,04,2017,17:08:00','feb,05,2017,06:39:00', '43');
+fixTime('feb,04,2017,17:15:00','feb,05,2017,04:55:54', '44');
+fixTime('feb,04,2017,17:32:00','feb,05,2017,01:14:00', '45');
+fixTime('feb,04,2017,17:03:00','feb,05,2017,03:00:00', '46');
+upTime('feb,04,2017,17:10:00', '47');
+fixTime('feb,04,2017,17:18:00','feb,05,2017,02:40:00', '48');
+fixTime('feb,04,2017,17:04:00','feb,05,2017,03:04:00', '49');
+fixTime('feb,04,2017,17:11:00','feb,05,2017,06:39:00', '50');
+fixTime('feb,04,2017,17:25:00','feb,05,2017,03:57:30', '51');
+fixTime('feb,04,2017,17:05:00','feb,05,2017,06:48:40', '52');
+fixTime('feb,04,2017,17:12:00','feb,05,2017,04:56:00', '53');
+fixTime('feb,04,2017,17:26:00','feb,05,2017,03:57:30', '54');
+fixTime('feb,04,2017,17:06:00','feb,05,2017,03:27:00', '55');
+fixTime('feb,04,2017,17:13:00','feb,05,2017,05:32:24', '56');
+fixTime('feb,04,2017,17:27:00','feb,05,2017,03:57:30', '57');
+
+}
+function upTime(countTo, idprefix) {
+  now = new Date();
+  countTo = new Date(countTo);
+  difference = (now-countTo);
+
+  
+  hours=Math.floor((difference%(60*60*1000*24))/(60*60*1000)*1);
+  mins=Math.floor(((difference%(60*60*1000*24))%(60*60*1000))/(60*1000)*1);
+  secs=Math.floor((((difference%(60*60*1000*24))%(60*60*1000))%(60*1000))/1000*1);
+
+  
+  document.getElementById(idprefix+'hours').firstChild.nodeValue = hours;
+  document.getElementById(idprefix+'minutes').firstChild.nodeValue = ("00" +mins).substr(-2);
+  document.getElementById(idprefix+'seconds').firstChild.nodeValue = ("00" +secs).substr(-2);
+  //var secondtext = (secs == 1) ? "second " : "seconds";
+  
+  //if (secs!=1)
+  //{
+  //  secondtext = "seconds"
+  //}
+  
+  //document.getElementById(idprefix+'secondstag').firstChild.nodeValue = secondtext;
+
+  clearTimeout(upTime[idprefix]);
+  upTime[idprefix]=setTimeout(function(){ upTime(countTo, idprefix); },1000);
+}
+
+function fixTime(countTo, endTime, idprefix) {
+  now = new Date(endTime);
+  countTo = new Date(countTo);
+  difference = (now-countTo);
+
+  
+  hours=Math.floor((difference%(60*60*1000*24))/(60*60*1000)*1);
+  mins=Math.floor(((difference%(60*60*1000*24))%(60*60*1000))/(60*1000)*1);
+  secs=Math.floor((((difference%(60*60*1000*24))%(60*60*1000))%(60*1000))/1000*1);
+
+  
+  document.getElementById(idprefix+'hours').firstChild.nodeValue = hours;
+  document.getElementById(idprefix+'minutes').firstChild.nodeValue = mins;
+  document.getElementById(idprefix+'seconds').firstChild.nodeValue = secs;
+  var secondtext = (secs == 1) ? "second " : "seconds";
+  
+  //if (secs!=1)
+  //{
+  //  secondtext = "seconds"
+  //}
+  
+  document.getElementById(idprefix+'secondstag').firstChild.nodeValue = secondtext;
+
+  
+}
+</script>
+
+<div id="countup">
+  <p>It's been</p>
+  <p id="totalhours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="totalminutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="totalseconds">00</p>
+  <p id="totalsecondstag" class="timeRefSeconds">second</p>
+  <p>since the Gold walk started. Locations as of 07:45</p>
+</div>
+<div id="countup"><br><br></div>
+
+<div id="countupfin">
+  <p>"1st Dursley" finished in</p>
+  <p id="38hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="38minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="38seconds">00</p>
+  <p id="38secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupret">
+  <p>"Dragons" kept going for</p>
+  <p id="39hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="39minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="39seconds">00</p>
+  <p id="39secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupfin">
+  <p>"Bablake Network" finished in</p>
+  <p id="40hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="40minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="40seconds">00</p>
+  <p id="40secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupfin">
+  <p>"Forest of Dean SAS" finished in</p>
+  <p id="41hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="41minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="41seconds">00</p>
+  <p id="41secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupfin">
+  <p>"Cotswold Vale" finished in</p>
+  <p id="42hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="42minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="42seconds">00</p>
+  <p id="42secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupfin">
+  <p>"Eastleigh District Explorers" finished in</p>
+  <p id="43hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="43minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="43seconds">00</p>
+  <p id="43secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupfin">
+  <p>"Farriers Explorer Scout Unit" finished in</p>
+  <p id="44hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="44minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="44seconds">00</p>
+  <p id="44secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupfin">
+  <p>"51st Gloucester" finished in</p>
+  <p id="45hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="45minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="45seconds">00</p>
+  <p id="45secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupret">
+  <p>"38th and 40th Strood Sea Scouts" kept going for</p>
+  <p id="46hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="46minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="46seconds">00</p>
+  <p id="46secondstag" class="timeRefSeconds">second</p>
+</div><div id="countup">
+  <p>"Eastleigh District Explorers" have taken</p>
+  <p id="47hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="47minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="47seconds">00</p>
+  <p id="47secondstag" class="timeRefSeconds">seconds so far and have got past CP 14
+</p>
+  </div><div id="countupret">
+  <p>"1st Cheltenham / 1st USL" kept going for</p>
+  <p id="48hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="48minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="48seconds">00</p>
+  <p id="48secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupret">
+  <p>"38th and 40th Strood Sea Scouts" kept going for</p>
+  <p id="49hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="49minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="49seconds">00</p>
+  <p id="49secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupfin">
+  <p>"Eastleigh District Explorers" finished in</p>
+  <p id="50hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="50minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="50seconds">00</p>
+  <p id="50secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupret">
+  <p>"Inferno Explorers" kept going for</p>
+  <p id="51hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="51minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="51seconds">00</p>
+  <p id="51secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupfin">
+  <p>"Black Sheep ESU" finished in</p>
+  <p id="52hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="52minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="52seconds">00</p>
+  <p id="52secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupfin">
+  <p>"Longlevens Guiders" finished in</p>
+  <p id="53hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="53minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="53seconds">00</p>
+  <p id="53secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupret">
+  <p>"Inferno Explorers" kept going for</p>
+  <p id="54hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="54minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="54seconds">00</p>
+  <p id="54secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupret">
+  <p>"Dragons" kept going for</p>
+  <p id="55hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="55minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="55seconds">00</p>
+  <p id="55secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupfin">
+  <p>"21st Gloucester Guides" finished in</p>
+  <p id="56hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="56minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="56seconds">00</p>
+  <p id="56secondstag" class="timeRefSeconds">second</p>
+</div><div id="countupret">
+  <p>"Inferno Explorers" kept going for</p>
+  <p id="57hours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="57minutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="57seconds">00</p>
+  <p id="57secondstag" class="timeRefSeconds">second</p>
+</div>
+</html>

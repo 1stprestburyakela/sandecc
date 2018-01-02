@@ -1,0 +1,145 @@
+<html>
+<meta http-equiv="refresh" content="5" >
+<style>
+
+#countup{
+display: block;
+padding: 0px;
+background-color: #FFA500;
+margin: 5 5 5 5px;
+text-align: center;
+font-size:24;
+}
+
+#countup p {
+display: inline-block;
+padding: 5px;
+background: #FFA500;
+margin: 0 0 0px;
+}
+
+#countupnex{
+display: block;
+padding: 0px;
+color: red;
+background-color: #FFA500;
+margin: 5 5 5 5px;
+text-align: center;
+}
+
+#countupnex p {
+display: inline-block;
+padding: 5px;
+background: #FFA500;
+margin: 0 0 0px;
+}
+
+#countupret{
+display: block;
+padding: 0px;
+background-color: red;
+margin: 5 5 5 5px;
+text-align: center;
+}
+
+#countupret p {
+display: inline-block;
+padding: 5px;
+background: #FFA500;
+margin: 0 0 0px;
+}
+
+#countupfin{
+display: block;
+padding: 0px;
+background-color: green;
+margin: 5 5 5 5px;
+text-align: center;
+}
+
+#countupfin p {
+display: inline-block;
+padding: 5px;
+background: #FFA500;
+margin: 0 0 0px;
+}
+
+</style>
+<script>
+/*
+* Basic Count Up from Date and Time
+* Author: @mrwigster / trulycode.com
+*/
+window.onload=function() {
+  // Month,Day,Year,Hour,Minute,Second
+  upTime('feb,04,2017,17:00:00', 'total'); // ****** Change this line!
+  %s
+}
+function upTime(countTo, idprefix) {
+  now = new Date();
+  countTo = new Date(countTo);
+  difference = (now-countTo);
+
+  
+  hours=Math.floor((difference%%(60*60*1000*24))/(60*60*1000)*1);
+  mins=Math.floor(((difference%%(60*60*1000*24))%%(60*60*1000))/(60*1000)*1);
+  secs=Math.floor((((difference%%(60*60*1000*24))%%(60*60*1000))%%(60*1000))/1000*1);
+
+  
+  document.getElementById(idprefix+'hours').firstChild.nodeValue = hours;
+  document.getElementById(idprefix+'minutes').firstChild.nodeValue = ("00" +mins).substr(-2);
+  document.getElementById(idprefix+'seconds').firstChild.nodeValue = ("00" +secs).substr(-2);
+  //var secondtext = (secs == 1) ? "second " : "seconds";
+  
+  //if (secs!=1)
+  //{
+  //  secondtext = "seconds"
+  //}
+  
+  //document.getElementById(idprefix+'secondstag').firstChild.nodeValue = secondtext;
+
+  clearTimeout(upTime[idprefix]);
+  upTime[idprefix]=setTimeout(function(){ upTime(countTo, idprefix); },1000);
+}
+
+function fixTime(countTo, endTime, idprefix) {
+  now = new Date(endTime);
+  countTo = new Date(countTo);
+  difference = (now-countTo);
+
+  
+  hours=Math.floor((difference%%(60*60*1000*24))/(60*60*1000)*1);
+  mins=Math.floor(((difference%%(60*60*1000*24))%%(60*60*1000))/(60*1000)*1);
+  secs=Math.floor((((difference%%(60*60*1000*24))%%(60*60*1000))%%(60*1000))/1000*1);
+
+  
+  document.getElementById(idprefix+'hours').firstChild.nodeValue = hours;
+  document.getElementById(idprefix+'minutes').firstChild.nodeValue = mins;
+  document.getElementById(idprefix+'seconds').firstChild.nodeValue = secs;
+  var secondtext = (secs == 1) ? "second " : "seconds";
+  
+  //if (secs!=1)
+  //{
+  //  secondtext = "seconds"
+  //}
+  
+  document.getElementById(idprefix+'secondstag').firstChild.nodeValue = secondtext;
+
+  
+}
+</script>
+
+<div id="countup">
+  <p>It's been</p>
+  <p id="totalhours">00</p>
+  <p class="timeRefHours">hours</p>
+  <p id="totalminutes">00</p>
+  <p class="timeRefMinutes">minutes</p>
+  <p id="totalseconds">00</p>
+  <p id="totalsecondstag" class="timeRefSeconds">second</p>
+  <p>since the Gold walk started. Locations as of 07:45</p>
+</div>
+<div id="countup"><br><br></div>
+
+%s
+</html>
