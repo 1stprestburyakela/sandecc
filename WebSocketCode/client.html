@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+ 
+<html>
+    <head>
+        <title>Echo Chamber</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+    </head>
+    <body>
+       
+        <div>
+            Location <input type="text" id="Location" size="200"/><br>
+            Message <input type="text" id="Message" size="1000"/><br>
+            Time <input type="text" id="Time"/><br>
+        </div>
+        <div>
+            <button type="button" onclick="openSocket();" >Open</button><br>
+            <button type="button" onclick="send();" >Send</button><br>
+            <button type="button" onclick="closeSocket();" >Close</button><br>
+            admin: 192.168.20.14  cafe: 192.168.20.11 192.168.20.12 local: 192.168.20.27 bar: 192.168.20.10
+        </div>
+        <!-- Server responses get written here -->
+        <div id="messages"></div>
+       
+        <!-- Script to utilise the WebSocket -->
+        <script type="text/javascript">
+                       
+            var webSocket;
+            var messages = document.getElementById("messages");
+            var url = "wss://daleksunited.duckdns.org/ws/EchoChamber/echo"
+            //var url = "ws://192.168.0.236:8000/ws"
+            var piloc = "SEMediaPi1"
+            
+            if (url != null)
+            {
+                openSocket();
+            }
+            
+            
+           
+            function openSocket(){
+                // Ensures only one connection is open at a time
+                if(webSocket !== undefined && webSocket.readyState !== WebSocket.CLOSED){
+                   writeResponse("WebSocket is already opened.");
+                    return;
+                }
+                // Create a new instance of the websocket
+                webSocket = new WebSocket(url);
+                 
+                /**
+                 * Binds functions to the listeners for the websocket.
+                 */
+                webSocket.onopen = function(event){
+                    // For reasons I can't determine, onopen gets called twice
+                    // and the first time event.data is undefined.
+                    // Leave a comment if you know the answer.
+                    if(event.data === undefined)
+                        return;
+ 
+                    writeResponse(event.data);
+                };
+ 
+                webSocket.onmessage = function(event){
+                
+                    writeResponse(event.data);
+                    onmessage(event.data);
+                };
+ 
+                webSocket.onclose = function(event){
+                    writeResponse("Connection closed");
+                    setTimeout(openSocket, 10000)
+                };
+            }
+           
+            /**
+             * Sends the value of the text input to the server
+             */
+            function send(){
+                var obj = Object();
+                obj["type"] = "message"
+                obj["message"] = document.getElementById("Message").value; // Message contents
+                obj["time"] = parseInt(document.getElementById("Time").value); //Can be anything
+                obj["location"] = document.getElementById("Location").value; // Where it is
+                //var text = document.getElementById("messageinput").value;
+                webSocket.send(JSON.stringify(obj));
+            }
+           
+            function closeSocket(){
+                webSocket.close();
+            }
+            
+            function onmessage(msg)
+            {
+                var obj = JSON.parse(msg);
+                try{
+                console.log(msg);
+                if (obj["type"] == "location")
+                {
+                    writeResponse("Location: "+obj["location"])
+                    piloc = obj["location"]
+                }
+                else if (obj["type"] == "message" && (obj["location"] == piloc || obj["location"] == "all"))
+                {
+                    writeResponse("Message: " + obj["message"])
+                    displaymessage(obj["message"], obj["time"]);
+                }
+                else
+                {}
+                }
+                catch (e)
+                {
+                    writeResponse("Malformed message " + msg)
+                }
+                
+            }
+            
+            function displaymessage(msg, time)
+            {
+            var modal = document.getElementById('myModal');
+            modal.style.display = "block";
+            setTimeout(hide, int(time));
+            }
+            
+            function hide()
+            {
+            var modal = document.getElementById('myModal');
+            modal.style.display = "none";
+            }
+ 
+            function writeResponse(text){
+                console.log(text)
+                //
+                messages.innerHTML += "<br/>" + text;
+            }
+           
+        </script>
+       
+    </body>
+</html>
