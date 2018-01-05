@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <title>Testing</title>
+
+  
+</head>
+
+<body>
+
+<script src="js/websockets.js"></script>
+
+<script>
+x = new SEWebSocket("wss://daleksunited.duckdns.org/se/EchoChamber/echo");
+x.open();
+
+function send(){
+                var payload = Object();
+                payload['time'] =  parseInt(document.getElementById("Time").value); //Can be anything
+                payload['html'] = document.getElementById("Message").value; // Message contents
+                
+                var obj = Object();
+                obj["type"] = "popup"
+                obj["payload"] = JSON.stringify(payload) 
+                
+                obj["location"] = [document.getElementById("Location").value]; // Where it is
+                //var text = document.getElementById("messageinput").value;
+                x.send(JSON.stringify(obj));
+            }
+            
+            function reload(){
+               
+                
+                var obj = Object();
+                obj["type"] = "reload"
+                obj["payload"] = 0
+                
+                obj["location"] = [document.getElementById("Location").value]; // Where it is
+                //var text = document.getElementById("messageinput").value;
+                x.send(JSON.stringify(obj));
+            }
+</script>
+
+
+ <div>
+            Location <input type="text" id="Location" size="200" value="all"/><br>
+            Message <input type="text" id="Message" size="1000"/><br>
+            Time <input type="text" id="Time"/><br>
+</div>
+<div>
+    
+    <button type="button" onclick="send();" >Send</button><br>
+    
+    admin: 192.168.20.14  cafe: 192.168.20.11 192.168.20.12 local: 192.168.20.27 bar: 192.168.20.10
+</div>
+
+
+
+<div>
+    
+    <button type="button" onclick="reload();" >Reload</button><br>
+    
+    
+</div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,20 @@
+html {
+    cursor: none;
+    font-size: 40px;
+    color: green;
+    font-family: 'BebasNeueRegular', sans-serif;
+    padding: 0px;
+    margin: 0px
+}
+
+body
+{
+    margin: 0px;
+    background-color: black;
+    
+}
+div {
+    padding: 0px;
+    margin: 0px;
+    
+}

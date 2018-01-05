@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <title>Testing</title>
+  <link rel="stylesheet" type="text/css" href="styles/basestyle.css">
+  <link rel="stylesheet" type="text/css" href="styles/popup.css">
+</head>
+
+<body>
+<script src="js/countdown.js"></script>
+<script src="js/reload.js"></script>
+<script src="js/websockets.js"></script>
+<script src="js/popup.js"></script>
+<script>
+
+// Websocket set up
+SEW = new SEWebSocket("wss://daleksunited.duckdns.org/se/EchoChamber/echo", true);
+SEW.open();
+
+// Create two pop up boxes - they use the same CSS name, so will appear in the same place (pointless for now)
+SEPopup1 = new SEPopup("pop1", "popup");
+SEPopup1.displaymessage("hello", 10000);
+
+SEPopup2 = new SEPopup("pop2", "popup");
+SEPopup2.displaymessage("wibble", 4000);
+
+// Add some message routes - popup goes to SEPopup1 (popup.js), reload goes to SEReload (reload.js)
+SEW.addRoute('popup', SEPopup1.processJSON.bind(SEPopup1))
+SEW.addRoute('reload', SEReload)
+</script>
+
+
+
+
+
+
+
+</body>
+
+</html>
