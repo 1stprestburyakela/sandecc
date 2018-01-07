@@ -41,6 +41,20 @@ function send(){
                 //var text = document.getElementById("messageinput").value;
                 x.send(JSON.stringify(obj));
             }
+            
+            function add1hourtotime()
+            {
+                time = Date.now()
+                time += 1000*3600;
+                
+                var obj = Object();
+                obj["type"] = "timeoffset"
+                obj["payload"] = time;
+                obj["location"] = [document.getElementById("Location").value]; // Where it is
+                //var text = document.getElementById("messageinput").value;
+                x.send(JSON.stringify(obj));
+                
+            }
 </script>
 
 
@@ -61,6 +75,13 @@ function send(){
 <div>
     
     <button type="button" onclick="reload();" >Reload</button><br>
+    
+    
+</div>
+
+<div>
+    
+    <button type="button" onclick="add1hourtotime();" >Add hour</button><br>
     
     
 </div>

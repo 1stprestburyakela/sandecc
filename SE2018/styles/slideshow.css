@@ -1,0 +1,37 @@
+#slideshow_slide1 {
+    background-color: gray;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    
+}
+
+#slideshow_slide2 {
+    background-color: red;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    left: 15px;
+    
+    
+}
+
+#slideshow_slide3 {
+    background-color: blue;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    left: 30px;
+    
+    
+}
+
+.slideshow {
+    border: solid #000;
+    border-width: 0px;
+    border-color: white;
+    position: absolute;
+    box-sizing: border-box;
+    display: block;
+    float: left;
+}

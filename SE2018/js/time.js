@@ -1,4 +1,4 @@
-var timeoffset = Date.parse(new Date()) - Date.parse(new Date());
+var timeoffset = 0
 
 // This function returns the hours, minutes and seconds until the specified endtime, using timeoffset to ensure an accurate result. days = true means hours are capped at 24
 // 0<=Seconds<60
@@ -24,11 +24,18 @@ function getTimeRemaining(endtime, days)
 }
 
 // Call this function with a parsable DateTime string to initialise the timeoffset - this allows us 
-// to work even if the system local time is not accurate
+// to work even if the system local time is not accurate, providing we can send a message from a system
+// which does have an accurate local time!
 function setTimeOffset(serverTime)
 {
-    timeoffset = Date.parse(new Date()) - Date.parse(serverTime);
+    timeoffset = Date.now() - serverTime;
     console.log(timeoffset);
+}
+
+function getSyncDate()
+{
+    time = new Date(Date.now() - timeoffset);    
+    return time;
 }
 
 // Converts a number into a 2 digit string, with preceding zeros
