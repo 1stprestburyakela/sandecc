@@ -25,8 +25,10 @@ function SESlideShow(divelement, paused) {
     
     // Debugging - hard code some slides
     this.slides.push(new ClockSlide(-60, "1, it's currently {clock} BST"))
-    this.slides.push(new ClockSlide(-60, "2, it's currently {clock} BST"))
-    this.slides.push(new ClockSlide(-60, "3, it's currently {clock} BST"))
+    this.slides.push(new ClockSlide(0, "2, it's currently {clock} GMT"))
+    this.slides.push(new ClockSlide(+300, "3, it's currently {clock} EST"))
+    this.slides.push(new ClockSlide(0, "4, it's currently {clock} UTC"))
+    
     
     this.slideindex = 0; // Index of currently displayed slide
     
@@ -130,7 +132,7 @@ SESlideShow.prototype.resize = function()
 SESlideShow.prototype.forward = function()
 {
     // If we are already mid transition, finish immediately
-    this.snapall()
+    this.snapall();
     
     temp = this.prev;
     this.prev = this.current;
@@ -139,18 +141,30 @@ SESlideShow.prototype.forward = function()
     this.settargets();
     
     
+    // Stop the one we're about to unload
     this.next.slide.hide();
+    // Display the one that's about to appear
     this.current.slide.display();
     // swap the next
-    this.next.slide.prepareToDisplay;
+    this.slideindex += 1;
+    loadindex = (this.slideindex + 1) % this.slides.length;
+    this.next.slide = this.slides[loadindex];
+    
+    // TODO callback funcs
+    
+    noop = function(){};
+    this.next.slide.prepareToDisplay(this.next, noop, noop);
+    
     
     
     // We have a new next, snap that to the next position
     this.snap(this.next);
     
-    
+    // Animate the other two
     this.animate(this.current);
     this.animate(this.prev);
+    
+    
     
     //loadNext = new Promise(nextslide.prepareToDisplay.bind(nextslide, targetdiv)
     //loadNext.then(//func to clal when ready, func to call to skip)
@@ -159,6 +173,7 @@ SESlideShow.prototype.forward = function()
 SESlideShow.prototype.backward = function()
 {
     // If we are already mid transition, finish immediately
+    this.snapall();
     
     temp = this.next;
     this.next = this.current;
@@ -166,10 +181,22 @@ SESlideShow.prototype.backward = function()
     this.prev = temp;
     this.settargets();
     
+    // Stop the one we're about to unload
     this.prev.slide.hide();
+    // Display the ones that's about to appear
     this.current.slide.display();
     // swap the previous
-    this.prev.slide.prepareToDisplay;
+    this.slideindex -= 1;
+    loadindex = (this.slideindex -1 + this.slides.length) % this.slides.length;
+    this.prev.slide = this.slides[loadindex];
+    
+    // TODO callback funcs
+    
+    noop = function(){};
+    this.prev.slide.prepareToDisplay(this.prev, noop, noop);
+    
+    
+    
     
     // We have a new previous, snap that to the next position
     this.snap(this.prev);

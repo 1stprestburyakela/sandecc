@@ -29,7 +29,7 @@ div {
     height: 200px;
     width: 400px;
     overflow: hidden;  /*stop things escaping */
-    /*overflow: visible;*/
+    overflow: visible; /*to aid debugging */
     position: relative;
     padding: 0px;
     margin: auto;
