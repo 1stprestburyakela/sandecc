@@ -1,5 +1,5 @@
 #slideshow_slide1 {
-    background-color: gray;
+    background-color: black;
     height: 100%;
     width: 100%;
     box-sizing: border-box;
@@ -7,7 +7,7 @@
 }
 
 #slideshow_slide2 {
-    background-color: red;
+    background-color: black;
     height: 100%;
     width: 100%;
     box-sizing: border-box;
@@ -17,7 +17,7 @@
 }
 
 #slideshow_slide3 {
-    background-color: blue;
+    background-color: black;
     height: 100%;
     width: 100%;
     box-sizing: border-box;

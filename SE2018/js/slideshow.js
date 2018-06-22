@@ -7,27 +7,55 @@
 
 // In automatic operation mode, the current slide determines the time we advance on. However, if the next slide
 // has not finished loading we will wait an additional second. If that is not enough time, 'next' is dropped 
-// and replaced, and the current slide 'plays again'. 
+// and replaced, and the current slide 'plays again'.  TODO - make this true
 
 // Note that for a transition, only two of the slides are visible. The last one can be reloading to the next
 // slide content
 
 
-function SESlideShow(divelement, paused) {
+
+function SESlideShow(divelement, paused, slides) {
     // Pass in the develement to run the show on, and true/false on whether we load paused
     // Please don't give the divelement any borders - if needed nest two!
     // The divelement must be have a style of position: absolute/relative
     
+    
+    // Apologies, there's a bit of dependancy ickiness here. Due a refactor.
+    slidetypes = 
+    {
+        "clock" : ClockSlide,
+        "image" : ImageSlide
+        
+    }
+    
+    
+    
     this.divelement = divelement;
-    this.paused = paused;
+    
     
     this.slides = new Array();
     
     // Debugging - hard code some slides
-    this.slides.push(new ClockSlide(-60, "1, it's currently {clock} BST"))
-    this.slides.push(new ClockSlide(0, "2, it's currently {clock} GMT"))
-    this.slides.push(new ClockSlide(+300, "3, it's currently {clock} EST"))
-    this.slides.push(new ClockSlide(0, "4, it's currently {clock} UTC"))
+    if (slides.length == 0)
+    {
+        this.slides.push(new ClockSlide(-60, "1, it's currently {clock} BST", 5000))
+        this.slides.push(new ClockSlide(0, "2, it's currently {clock} GMT", 5000))
+        this.slides.push(new ImageSlide("images/P1010647.jpg", 5000))
+        this.slides.push(new ImageSlide("images/P1010938.jpg", 5000))
+    }
+    
+    else
+    {
+        for (x in slides)
+        {
+            type = slides[x]["type"];
+            args = slides[x]["args"];
+            slide = new slidetypes[type](...args);
+            this.slides.push(slide);
+            
+        }
+        
+    }
     
     
     this.slideindex = 0; // Index of currently displayed slide
@@ -51,7 +79,7 @@ function SESlideShow(divelement, paused) {
     
     
     // Settings for animations
-    this.animationstepcount = 50;
+    this.animationstepcount = 100;
     this.animationstepinterval = 20;
     
     
@@ -103,9 +131,12 @@ function SESlideShow(divelement, paused) {
     
     noop = function(){};
     
+    
+    // TODO order here is important for edge cases of 1 or 2 slides. Consider making that explicit. (Linked to how we cope if we remove slides down to 1 or 2)
+    this.prev.slide.prepareToDisplay(this.prev, noop, noop);
     this.current.slide.prepareToDisplay(this.current, noop, noop);
     this.next.slide.prepareToDisplay(this.next, noop, noop);
-    this.prev.slide.prepareToDisplay(this.prev, noop, noop);
+    
     
     this.current.slide.display();
 
@@ -115,8 +146,16 @@ function SESlideShow(divelement, paused) {
     this.snapall();
     
     
+    // No slide timer to start with
+    this.slidetimer = null;
     
-    
+    // Start the slideshow if needed
+    this.paused=true; // As we have not yet started
+    if (!paused)
+    {
+        
+        this.resume();
+    }
     
     
     
@@ -134,17 +173,34 @@ SESlideShow.prototype.forward = function()
     // If we are already mid transition, finish immediately
     this.snapall();
     
-    temp = this.prev;
-    this.prev = this.current;
-    this.current = this.next;
-    this.next = temp;
-    this.settargets();
     
+    if (this.slides.length <= 1)
+    {
+        return;
+        // Don't do anything
+    }
+    else if (this.slides.length == 2)
+    {
+        // Swap next and current only
+        temp = this.current;
+        this.current = this.next;
+        this.next = temp;        
+    }    
+    else
+    {    
+        temp = this.prev;
+        this.prev = this.current;
+        this.current = this.next;
+        this.next = temp;
+    }
+    
+    // Tell the slides where they want to go
+    this.settargets();
     
     // Stop the one we're about to unload
     this.next.slide.hide();
     // Display the one that's about to appear
-    this.current.slide.display();
+    displayTime = this.current.slide.display();
     // swap the next
     this.slideindex += 1;
     loadindex = (this.slideindex + 1) % this.slides.length;
@@ -164,6 +220,7 @@ SESlideShow.prototype.forward = function()
     this.animate(this.current);
     this.animate(this.prev);
     
+    return displayTime;
     
     
     //loadNext = new Promise(nextslide.prepareToDisplay.bind(nextslide, targetdiv)
@@ -175,16 +232,25 @@ SESlideShow.prototype.backward = function()
     // If we are already mid transition, finish immediately
     this.snapall();
     
-    temp = this.next;
-    this.next = this.current;
-    this.current = this.prev;
-    this.prev = temp;
+    if (this.slides.length <= 2)
+    {
+        // Don't do anything
+        return;
+    }
+    else
+    {    
+        temp = this.next;
+        this.next = this.current;
+        this.current = this.prev;
+        this.prev = temp;        
+    }
+    
     this.settargets();
     
     // Stop the one we're about to unload
     this.prev.slide.hide();
     // Display the ones that's about to appear
-    this.current.slide.display();
+    displayTime = this.current.slide.display();
     // swap the previous
     this.slideindex -= 1;
     loadindex = (this.slideindex -1 + this.slides.length) % this.slides.length;
@@ -203,7 +269,7 @@ SESlideShow.prototype.backward = function()
     
     this.animate(this.current);
     this.animate(this.next);
-    
+    return displayTime;
     
 }
 
@@ -276,10 +342,26 @@ SESlideShow.prototype.animateprev = function()
 
 SESlideShow.prototype.pause = function()
 {
+    if (!this.paused)
+    {
+        this.paused = true;
+        clearTimeout(this.slidetimer);
+    }
     
 }
 
 SESlideShow.prototype.resume = function()
 {
+    if (this.paused)
+    {
+        this.paused = false;
+        this.slidetimer = setTimeout(this.autoslide.bind(this), this.forward());
+    }
+    
+}
+
+SESlideShow.prototype.autoslide = function()
+{
+    this.slidetimer = setTimeout(this.autoslide.bind(this), this.forward());
     
 }

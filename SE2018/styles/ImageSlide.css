@@ -1,0 +1,19 @@
+
+.imageslide {
+    
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    object-fit: contain; 
+    background-color: rgb(0,0,0); /* Fallback color */
+    
+    
+}
+
+.imageslide img
+{
+    border: 0.0em black solid;
+    padding: 0px;
+    border-radius: 5px;
+    
+}
+

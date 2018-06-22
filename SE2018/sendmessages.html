@@ -18,11 +18,11 @@ x.open();
 
 function send(){
                 var payload = Object();
-                payload['time'] =  parseInt(document.getElementById("Time").value); //Can be anything
+                payload['time'] =  parseInt(document.getElementById("Time").value); //String of time in milliseconds to display popup
                 payload['html'] = document.getElementById("Message").value; // Message contents
                 
                 var obj = Object();
-                obj["type"] = "popup"
+                obj["type"] = "mainpopup"
                 obj["payload"] = JSON.stringify(payload) 
                 
                 obj["location"] = [document.getElementById("Location").value]; // Where it is
@@ -42,6 +42,20 @@ function send(){
                 x.send(JSON.stringify(obj));
             }
             
+            function settime()
+            {
+                time = Date.now()
+                
+                
+                var obj = Object();
+                obj["type"] = "timeoffset"
+                obj["payload"] = time;
+                obj["location"] = [document.getElementById("Location").value]; // Where it is
+                //var text = document.getElementById("messageinput").value;
+                x.send(JSON.stringify(obj));
+                
+            }
+            
             function add1hourtotime()
             {
                 time = Date.now()
@@ -55,6 +69,20 @@ function send(){
                 x.send(JSON.stringify(obj));
                 
             }
+            
+            function control(control)
+            {
+                var obj = Object();
+                obj["type"] = control
+                obj["payload"] = 0
+                
+                obj["location"] = [document.getElementById("Location").value]; // Where it is
+                //var text = document.getElementById("messageinput").value;
+                x.send(JSON.stringify(obj));
+            
+            }
+            
+            
 </script>
 
 
@@ -78,10 +106,43 @@ function send(){
     
     
 </div>
-
+<div>
+    
+    <button type="button" onclick="settime();" >Set time</button><br>
+    
+    
+</div>
 <div>
     
     <button type="button" onclick="add1hourtotime();" >Add hour</button><br>
+    
+    
+</div>
+
+<div>
+    
+    <button type="button" onclick="control('next');" >Next</button><br>
+    
+    
+</div>
+
+<div>
+    
+    <button type="button" onclick="control('prev');" >Prev</button><br>
+    
+    
+</div>
+
+<div>
+    
+    <button type="button" onclick="control('pause');" >Pause</button><br>
+    
+    
+</div>
+
+<div>
+    
+    <button type="button" onclick="control('resume');" >Resume</button><br>
     
     
 </div>

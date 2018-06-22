@@ -62,6 +62,16 @@ SEWebSocket.prototype.send = function(message)
     this.websocket.send(message);
 };
 
+// send a logging message
+SEWebSocket.prototype.sendlog = function(message) 
+{
+     var obj = Object();
+    obj["type"] = "logging"
+    obj["payload"] = {"message":message,"from":[...this.locations]};    
+    
+    this.websocket.send(JSON.stringify(obj));
+};
+
 // Receive a message
 SEWebSocket.prototype.onMessage = function(event) 
 {

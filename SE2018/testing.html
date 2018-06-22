@@ -7,6 +7,8 @@
   <link rel="stylesheet" type="text/css" href="styles/basestyle.css">
   <link rel="stylesheet" type="text/css" href="styles/popup.css">
   <link rel="stylesheet" type="text/css" href="styles/slideshow.css">
+  
+  <link rel="stylesheet" type="text/css" href="styles/ImageSlide.css">
 </head>
 
 <body>
@@ -17,22 +19,25 @@
 <script src="js/slideshow.js"></script>
 
 <script src="slides/ClockSlide.js"></script>
-
+<script src="slides/ImageSlide.js"></script>
 
 
 <div id="slidetest"></div>
 
 <div id="slidearea"></div>
+<div id="sloganarea">Welcome to Strategy 2018</div>
 
-<div>
- <button type="button" onclick="prev();" >Previous</button><br>
-  <button type="button" onclick="next();" >Next</button><br>
-</div>
+
 <script>
 
 // Websocket set up
 SEW = new SEWebSocket("wss://daleksunited.duckdns.org/se/EchoChamber/echo", true);
 SEW.open();
+
+// Send Websocket log function to reloader
+setreloadlogger(SEW.sendlog.bind(SEW));
+
+
 // Connect Websocket to time signal
 SEW.addRoute('timeoffset', setTimeOffset);
 
@@ -45,36 +50,50 @@ SEPopup2 = new SEPopup("pop2", "popup");
 SEPopup2.displaymessage("wibble", 0);
 
 // Add some message routes - popup goes to SEPopup1 (popup.js), reload goes to SEReload (reload.js)
-SEW.addRoute('popup', SEPopup1.processJSON.bind(SEPopup1))
+SEW.addRoute('mainpopup', SEPopup1.processJSON.bind(SEPopup1))
 SEW.addRoute('reload', SEReload)
+SEW.addRoute('next', next)
+SEW.addRoute('prev', prev)
+SEW.addRoute('resume', resume)
+SEW.addRoute('pause', pause)
 
-// Test a slide
-element = document.getElementById("slidetest");
-slide = new ClockSlide(-60, "Hello, it's currently {clock} BST"); // -60 is BST
-slide.load()
-slide.prepareToDisplay(element, function(){});
-slide.display();
 
-setTimeout(function(){slide.hide()},5000); 
-setTimeout(function(){slide.display()},8000);
-//slide.hide();
-
-//slide.unload();
-
-//Slide show test
+//Slide show
 element = document.getElementById("slidearea");
-SESS = new SESlideShow(element, false)
+
+
+// If you dynamically generate this list from your control software you'd win...
+slides = [
+{type:"clock", args:[0, "1 it's currently {clock} GMT", 5000]},
+{type:"clock", args:[0, "2 it's currently {clock} GMT", 5000]},
+{type:"clock", args:[0, "3 it's currently {clock} GMT", 5000]},
+{type:"clock", args:[0, "4 it's currently {clock} GMT", 5000]},
+{type:"image", args:["images/P1010647.jpg", 5000]}
+];
+SESS = new SESlideShow(element, false, slides)
 
 
 function next()
 {
 //debugger
+SESS.pause();
 SESS.forward();
 }
 
 function prev()
 {
+SESS.pause();
 SESS.backward();
+}
+
+function resume()
+{
+SESS.resume();
+}
+
+function pause()
+{
+SESS.pause();
 }
 
 </script>

@@ -1,6 +1,6 @@
 // Ensure time.js is also included!
 
-function ClockSlide(utcMinutesOffset, contentString)
+function ClockSlide(utcMinutesOffset, contentString, displayTime)
 {
     //console.log("ClockSlide: constructor")
     // Create a clockslide object
@@ -13,6 +13,7 @@ function ClockSlide(utcMinutesOffset, contentString)
     this.offset = utcMinutesOffset;  // BST (GMT+1) would be -60
     this.htmlElement = null;
     this.contentString = contentString;
+    this.displayTime = displayTime;
 }
 
 ClockSlide.prototype.load = function()
@@ -52,6 +53,7 @@ ClockSlide.prototype.display = function()
     this.updateTime();
     clearInterval(this.updater);
     this.updater = setInterval(this.updateTime.bind(this), 1000);
+    return this.displayTime;
 }
 
 ClockSlide.prototype.reDisplay = function()

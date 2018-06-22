@@ -26,10 +26,23 @@ div {
 
 #slidearea {
     background-color: yellow;
-    height: 200px;
-    width: 400px;
+    height: 90vh;
+    width: 100vw;
     overflow: hidden;  /*stop things escaping */
-    overflow: visible; /*to aid debugging */
+    /*overflow: visible; to aid debugging */
+    position: relative;
+    padding: 0px;
+    margin: auto;
+    
+    
+}
+
+#sloganarea {
+    background-color: black;
+    height: 10vh;
+    width: 100vw;
+    text-align: center;
+    
     position: relative;
     padding: 0px;
     margin: auto;

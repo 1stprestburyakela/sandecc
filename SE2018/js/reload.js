@@ -2,6 +2,7 @@
 // Poll every 15 seconds
 
 var version;
+var reloadlogger = null;
 var xhttp=new XMLHttpRequest();
 xhttp.onreadystatechange = function() {
   if (xhttp.readyState == 4 && xhttp.status == 200) {
@@ -20,6 +21,10 @@ var reload = function(){
           if (xhttp.readyState == 4 && xhttp.status == 200) {
              if (version != xhttp.responseText)
                 {
+                    if(reloadlogger)
+                    {
+                        reloadlogger("Reloaded")
+                    }
                     window.location.reload();
                 }
 			}
@@ -36,5 +41,15 @@ setInterval(reload, 15000);
 var SEReload = function(payload)
 {
     // This function is only called if the correct message type is received
-    window.location.reload();  
+    if(reloadlogger)
+    {
+        reloadlogger("Reloading")
+    }
+    window.location.reload();
+    
+}
+
+var setreloadlogger = function(loggerfunc)
+{
+    reloadlogger = loggerfunc;
 }
